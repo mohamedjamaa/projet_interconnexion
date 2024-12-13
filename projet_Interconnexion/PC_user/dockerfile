@@ -1,0 +1,18 @@
+FROM ubuntu:latest
+
+RUN apt update \
+    && apt-get -y install iptables apt-utils iproute2 systemd telnet nano iputils-ping \
+    && apt-get -f install \
+    && apt-get -y install wget \
+    && apt-get -y install ftp \
+    && apt-get -y install isc-dhcp-client \
+    && rm -rf /var/lib/apt/lists/*
+
+#RUN apt install dnsutils
+#RUN apt-get intall -y --force-yes wireguard
+
+COPY utilisateur1.sh /home/
+
+RUN ["chmod", "+x", "/home/utilisateur1.sh"]
+
+ENTRYPOINT [ "/home/utilisateur1.sh" ]

@@ -1,0 +1,16 @@
+FROM ubuntu:latest
+
+RUN apt update \
+    && apt-get -y install iptables apt-utils iproute2 systemd telnet nano iputils-ping \
+    && apt-get -f install \
+    && apt-get -y install wget \
+    && apt-get -y install ftp \
+    && apt-get -y install isc-dhcp-client \
+    && rm -rf /var/lib/apt/lists/*
+
+
+COPY routeur_client.sh /home/
+
+RUN ["chmod", "+x", "/home/routeur_client.sh"]
+
+ENTRYPOINT [ "/home/routeur_client.sh" ]
