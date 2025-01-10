@@ -1,0 +1,60 @@
+version: latest
+
+services:
+
+  r_interco: 
+    container_name: r_interco
+    build:
+      context: ./r_interco
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: r_interco
+    networks:
+      operateur:
+        #ipv4:120.0.98.1
+
+  r_particuliers: 
+    container_name: r_particuliers
+    build:
+      context: ./r_particuliers
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: r_particuliers
+    networks:
+      operateur:
+        #ipv4:120.0.98.2
+
+  r_sitesecondaire: 
+    container_name: r_sitesecondaire
+    build:
+      context: ./r_sitesecondaire
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: r_sitesecondaire
+    networks:
+      operateur:
+        #ipv4:120.0.98.3
+  
+  r1_entreprise: 
+    container_name: r1_entreprise
+    build:
+      context: ./r1_entreprise
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: r1_entreprise
+    networks:
+      operateur:
+        #ipv4:120.0.98.4
+
+networks:
+
+  operateur:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+          - subnet: 120.0.98.0/23
