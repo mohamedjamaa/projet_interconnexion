@@ -50,6 +50,32 @@ services:
       operateur:
         #ipv4:120.0.98.4
 
+  box: 
+    container_name: box
+    build:
+      context: ./box
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: box
+    networks:
+      operateur:
+        #ipv4:120.0.98.4
+      clients:
+        #ipv4:192.168.1.1
+
+  pc_user: 
+    container_name: pc_user
+    build:
+      context: ./pc_user
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: pc_user
+    networks:
+      - clients
+    tty: true
+
 networks:
 
   operateur:
@@ -58,3 +84,10 @@ networks:
       driver: default
       config:
           - subnet: 120.0.98.0/23
+
+  clients:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+          - subnet: 192.168.1.0/24
