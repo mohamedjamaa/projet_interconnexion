@@ -62,7 +62,7 @@ services:
       operateur:
         #ipv4:120.0.98.4
       clients:
-        #ipv4:192.168.1.1
+        ipv4_address: 192.168.1.2
 
   pc_user: 
     container_name: pc_user
@@ -73,7 +73,8 @@ services:
     restart: always
     hostname: pc_user
     networks:
-      - clients
+      clients:
+        ipv4_address: 192.168.1.3 
     tty: true
 
 networks:
