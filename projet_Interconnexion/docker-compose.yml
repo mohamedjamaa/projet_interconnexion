@@ -2,6 +2,7 @@ version: latest
 
 services:
 
+# Réseau Opérateur (routeurs)
   r_interco: 
     container_name: r_interco
     build:
@@ -12,7 +13,7 @@ services:
     hostname: r_interco
     networks:
       operateur:
-        #ipv4:120.0.98.1
+        ipv4_address: 120.0.98.2
 
   r_particuliers: 
     container_name: r_particuliers
@@ -24,7 +25,7 @@ services:
     hostname: r_particuliers
     networks:
       operateur:
-        #ipv4:120.0.98.2
+        ipv4_address: 120.0.98.3
 
   r_sitesecondaire: 
     container_name: r_sitesecondaire
@@ -36,7 +37,7 @@ services:
     hostname: r_sitesecondaire
     networks:
       operateur:
-        #ipv4:120.0.98.3
+        ipv4_address: 120.0.98.4
   
   r1_entreprise: 
     container_name: r1_entreprise
@@ -48,8 +49,9 @@ services:
     hostname: r1_entreprise
     networks:
       operateur:
-        #ipv4:120.0.98.4
+        ipv4_address: 120.0.98.5
 
+# Réseau clients
   box: 
     container_name: box
     build:
@@ -60,7 +62,7 @@ services:
     hostname: box
     networks:
       operateur:
-        #ipv4:120.0.98.4
+        ipv4_address: 120.0.98.6
       clients:
         ipv4_address: 192.168.1.2
 
@@ -75,6 +77,84 @@ services:
     networks:
       clients:
         ipv4_address: 192.168.1.3 
+    tty: true
+
+# Réseau Entreprise
+  r_siteprincipal:
+    container_name: r_siteprincipal
+    build:
+      context: ./r_siteprincipal
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: r_siteprincipal
+    networks:
+      operateur:
+        ipv4_address: 120.0.98.10
+      entreprise:
+        #ipv4_address: 120.0.100.2
+        
+  pc_1:
+    container_name: pc_1
+    build:
+      context: ./pc_1
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: pc_1
+    networks:
+      - entreprise
+    tty: true
+    
+  pc_2:
+    container_name: pc_2
+    build:
+      context: ./pc_2
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: pc_2
+    networks:
+      - entreprise
+    tty: true
+    
+  # DMZ
+  r_dmz:
+    container_name: r_dmz
+    build:
+      context: ./r_dmz
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: r_dmz
+    networks:
+      entreprise:
+        #ipv4_address: 120.0.100.3
+      dmz:
+        #ipv4_address: 120.0.102.2
+  
+  serveur_web:
+    container_name: serveur_web
+    build:
+      context: ./serveur_web
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: serveur_web
+    networks:
+      - dmz
+    tty: true
+    
+  serveur_dns:
+    container_name: serveur_dns
+    build:
+      context: ./serveur_dns
+      dockerfile: Dockerfile
+    privileged: true
+    restart: always
+    hostname: serveur_dns
+    networks:
+      - dmz
     tty: true
 
 networks:
@@ -92,3 +172,17 @@ networks:
       driver: default
       config:
           - subnet: 192.168.1.0/24
+
+  entreprise:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+          - subnet: 120.0.100.0/23
+              
+  dmz:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+          - subnet: 120.0.102.0/23
