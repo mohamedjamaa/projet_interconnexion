@@ -135,6 +135,8 @@ services:
   
   serveur_web:
     container_name: serveur_web
+    ports:
+      - "80:80"
     build:
       context: ./serveur_web
       dockerfile: Dockerfile
